@@ -24,7 +24,7 @@ public class QuestionDaoImpl implements QuestionDao {
 
         try (InputStream file = getClass().getClassLoader().getResourceAsStream(questionFileName)) {
 
-            if (file != null) { // Можно вместо if здись использовать assert file != null?
+            if (file != null) {
                 try (InputStreamReader inputStreamReader = new InputStreamReader(file, StandardCharsets.UTF_8);
                      BufferedReader bufferedReader = new BufferedReader(inputStreamReader)) {
 

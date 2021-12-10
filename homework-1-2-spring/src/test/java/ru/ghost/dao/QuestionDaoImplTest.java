@@ -9,8 +9,8 @@ import ru.ghost.dto.Question;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest(classes = QuestionDaoImpl.class)
 class QuestionDaoImplTest {
@@ -30,5 +30,12 @@ class QuestionDaoImplTest {
         Answer answer = question.getAnswers().get(1);
         assertEquals("2", answer.getAnswer());
         assertTrue(answer.isValue());
+    }
+
+    @Test
+    void getQuestionsIOException() {
+
+        List<Question> questions = questionDao.getQuestions("test");
+        assertEquals(0, questions.size());
     }
 }
