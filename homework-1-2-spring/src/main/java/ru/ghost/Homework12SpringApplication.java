@@ -6,6 +6,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import ru.ghost.service.QuizService;
 
+import java.io.IOException;
+
 @PropertySource("classpath:application.properties")
 @ComponentScan(basePackages = "ru.ghost")
 @Configuration

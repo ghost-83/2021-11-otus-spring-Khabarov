@@ -8,5 +8,5 @@ import lombok.Data;
 public class Answer {
 
     private String answer;
-    private Boolean value;
+    private boolean value;
 }

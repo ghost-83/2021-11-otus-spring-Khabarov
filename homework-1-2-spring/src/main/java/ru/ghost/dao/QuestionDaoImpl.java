@@ -1,6 +1,5 @@
 package ru.ghost.dao;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import ru.ghost.dto.Answer;
 import ru.ghost.dto.Question;
@@ -18,18 +17,12 @@ import java.util.stream.Collectors;
 @Repository
 public class QuestionDaoImpl implements QuestionDao {
 
-    private final String questionFileName;
-
-    public QuestionDaoImpl(@Value("${questions.source}")String questionFileName) {
-        this.questionFileName = questionFileName;
-    }
-
     @Override
-    public List<Question> getQuestions() {
+    public List<Question> getQuestions(String questionFileName) {
 
         List<Question> questions = new ArrayList<>();
 
-        try (InputStream file = getClass().getClassLoader().getResourceAsStream(this.questionFileName)) {
+        try (InputStream file = getClass().getClassLoader().getResourceAsStream(questionFileName)) {
 
             if (file != null) { // Можно вместо if здись использовать assert file != null?
                 try (InputStreamReader inputStreamReader = new InputStreamReader(file, StandardCharsets.UTF_8);
@@ -43,7 +36,7 @@ public class QuestionDaoImpl implements QuestionDao {
                                     String[] tmp = e.split("===");
                                     return Answer.builder()
                                             .answer(tmp[0])
-                                            .value(Boolean.valueOf(tmp[1]))
+                                            .value(Boolean.parseBoolean(tmp[1]))
                                             .build();
                                 })
                                 .collect(Collectors.toList());

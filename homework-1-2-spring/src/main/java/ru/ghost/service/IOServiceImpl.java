@@ -1,21 +1,25 @@
 package ru.ghost.service;
 
-import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
-import java.io.InputStreamReader;
+import java.io.IOException;
 import java.io.PrintStream;
 
 @Service
 public class IOServiceImpl implements IOService {
 
-    private final PrintStream printStream;
-    private final BufferedReader bufferedReader;
+    private PrintStream printStream;
+    private BufferedReader bufferedReader;
 
-    public IOServiceImpl() {
-        this.printStream = new PrintStream(System.out);
-        this.bufferedReader = new BufferedReader(new InputStreamReader(System.in));
+    @Override
+    public void setBufferedReader(BufferedReader bufferedReader) {
+        this.bufferedReader = bufferedReader;
+    }
+
+    @Override
+    public void setPrintStream(PrintStream printStream) {
+        this.printStream = printStream;
     }
 
     @Override
@@ -24,19 +28,12 @@ public class IOServiceImpl implements IOService {
     }
 
     @Override
-    public void printEmptyLine() {
-        printStream.println();
-    }
-
-    @SneakyThrows
-    @Override
     public String inputLine() {
-        return bufferedReader.readLine();
-    }
-
-    @SneakyThrows
-    @Override
-    public boolean inputNext() {
-        return bufferedReader.ready();
+        try {
+            return bufferedReader.readLine();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return "";
+        }
     }
 }

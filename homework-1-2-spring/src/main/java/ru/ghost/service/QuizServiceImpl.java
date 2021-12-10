@@ -1,10 +1,13 @@
 package ru.ghost.service;
 
-import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
 import ru.ghost.dto.Person;
 import ru.ghost.dto.Question;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintStream;
 import java.util.List;
 
 @Service
@@ -18,28 +21,46 @@ public class QuizServiceImpl implements QuizService {
         this.questionService = questionService;
     }
 
-    @SneakyThrows
     @Override
     public void run() {
 
         Person person = new Person();
         List<Question> questions = questionService.getQuestions();
+        ioService.setPrintStream(new PrintStream(System.out));
+        ioService.setBufferedReader(new BufferedReader(new InputStreamReader(System.in)));
 
         ioService.printLine("Welcome to the test!");
         ioService.printLine("Please enter your name:");
-        person.setFirstname(ioService.inputLine());
+        try {
+            person.setFirstname(ioService.inputLine());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         ioService.printLine("Please enter your last name:");
-        person.setLastname(ioService.inputLine());
+        try {
+            person.setLastname(ioService.inputLine());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         ioService.printLine("\nHappy passing the test!");
         ioService.printLine("Answer questions. Good luck!\n\n");
 
         for (Question question : questions) {
             ioService.printLine(question.getQuestionText());
+
             for (int i = 0; i < question.getAnswers().size(); i++) {
-                ioService.printLine((i + 1) + " " + question.getAnswers().get(i).getAnswer());
+                String str = question.getAnswers().get(i).getAnswer();
+                ioService.printLine((i + 1) + " " + str);
             }
-            if (question.getAnswers().get(Integer.parseInt(ioService.inputLine()) - 1).getValue())
+            int numb = 0;
+            try {
+                numb = Integer.parseInt(ioService.inputLine()) - 1;
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            if (question.getAnswers().get(numb).isValue())
                 person.setScore(person.getScore() + 1);
         }
 
