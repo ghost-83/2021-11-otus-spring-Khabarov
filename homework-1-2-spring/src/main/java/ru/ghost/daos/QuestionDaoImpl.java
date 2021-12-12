@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import ru.ghost.dtos.Answer;
 import ru.ghost.dtos.Question;
+import ru.ghost.exceptions.QuestionDaoException;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -50,7 +51,7 @@ public class QuestionDaoImpl implements QuestionDao {
                 }
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new QuestionDaoException("Failed to fetch questions!", e);
         }
 
         return questions;
