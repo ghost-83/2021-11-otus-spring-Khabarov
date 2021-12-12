@@ -1,4 +1,4 @@
-package ru.ghost.dto;
+package ru.ghost.dtos;
 
 import lombok.Builder;
 import lombok.Data;

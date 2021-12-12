@@ -1,4 +1,4 @@
-package ru.ghost.service;
+package ru.ghost.services;
 
 public interface QuizService {
 

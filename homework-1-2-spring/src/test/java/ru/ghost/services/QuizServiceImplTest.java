@@ -1,12 +1,12 @@
-package ru.ghost.service;
+package ru.ghost.services;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import ru.ghost.dto.Answer;
-import ru.ghost.dto.Question;
+import ru.ghost.dtos.Answer;
+import ru.ghost.dtos.Question;
 
 import java.io.IOException;
 import java.util.ArrayList;

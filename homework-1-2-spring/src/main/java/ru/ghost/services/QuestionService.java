@@ -1,6 +1,6 @@
-package ru.ghost.service;
+package ru.ghost.services;
 
-import ru.ghost.dto.Question;
+import ru.ghost.dtos.Question;
 
 import java.util.List;
 
