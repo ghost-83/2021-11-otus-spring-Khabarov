@@ -1,0 +1,5 @@
+The year of the first official release of java?;1993===false;1994===false;1995===true;1996===false
+Short length in java (bytes)?;1===false;2===true;4===false;8===false
+From which version did stream appear in java?;1.4===false;1.5===false;1.7===false;1.8===true
+What interface allows you to set sorting in an object?;Comparable===true;Comparator===false;List===false;Collection===false
+Which java version is not LTS?;8===false;11===false;15===true;17===false
