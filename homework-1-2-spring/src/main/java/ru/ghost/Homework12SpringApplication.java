@@ -16,7 +16,6 @@ public class Homework12SpringApplication {
 
         QuizService quizService = ctx.getBean(QuizService.class);
         quizService.run();
-
         ctx.close();
     }
 
