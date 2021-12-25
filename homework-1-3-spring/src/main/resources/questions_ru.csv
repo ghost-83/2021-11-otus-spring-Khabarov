@@ -1,0 +1,5 @@
+Год первого официального выпуска?;1993===false;1994===false;1995===true;1996===false
+Длинна short в java(байты)?;1===false;2===true;4===false;8===false
+С какой версии в java появились stream?;1.4===false;1.5===false;1.7===false;1.8===true
+Какой интерфейс позволяет задать сортировку в обьекте?;Comparable===true;Comparator===false;List===false;Collection===false
+Какая из версий java не является LTS?;8===false;11===false;15===true;17===false
