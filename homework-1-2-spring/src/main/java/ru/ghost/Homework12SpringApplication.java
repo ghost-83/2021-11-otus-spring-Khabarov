@@ -18,5 +18,4 @@ public class Homework12SpringApplication {
         quizService.run();
         ctx.close();
     }
-
 }
