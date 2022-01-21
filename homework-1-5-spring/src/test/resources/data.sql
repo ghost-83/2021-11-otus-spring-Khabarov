@@ -1,0 +1,12 @@
+insert into genre (id, `name`)
+values (1, 'Educational');
+insert into genre (id, `name`)
+values (2, 'Scientific');
+
+insert into author (id, first_name, last_name)
+values (1, 'Ivan', 'Pupcin');
+insert into author (id, first_name, last_name)
+values (2, 'Sergey', 'Gubcin');
+
+insert into book (id, `name`, author_id, genre_id)
+values (1, 'Learning java', 1, 1);
