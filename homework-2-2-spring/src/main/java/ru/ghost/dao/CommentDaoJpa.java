@@ -25,15 +25,6 @@ public class CommentDaoJpa implements CommentDao {
     @Override
     public List<Comment> findAll() {
         TypedQuery<Comment> query = em.createQuery("select c from Comment c ", Comment.class);
-        query.setHint("javax.persistence.fetchgraph", this.em.getEntityGraph("Comment.Book.Author.Genre"));
-        return query.getResultList();
-    }
-
-    @Override
-    public List<Comment> findAllByBookId(Long bookId) {
-        TypedQuery<Comment> query = em.createQuery("select c from Comment c where c.book.id = :bookId", Comment.class);
-        query.setParameter("bookId", bookId);
-        query.setHint("javax.persistence.fetchgraph", this.em.getEntityGraph("Comment.Book.Author.Genre"));
         return query.getResultList();
     }
 

@@ -10,8 +10,6 @@ public interface CommentDao {
 
     List<Comment> findAll();
 
-    List<Comment> findAllByBookId(Long bookId);
-
     Comment findById(Long id);
 
     Comment save(Comment comment);

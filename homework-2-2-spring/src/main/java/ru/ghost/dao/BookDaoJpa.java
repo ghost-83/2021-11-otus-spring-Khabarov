@@ -31,24 +31,6 @@ public class BookDaoJpa implements BookDao {
     }
 
     @Override
-    public List<Book> findAllByAuthorId(Long id) {
-        TypedQuery<Book> query = em.createQuery("select b from Book b where b.author.id = :id", Book.class);
-        query.setParameter("id", id);
-        query.setHint("javax.persistence.fetchgraph", this.em.getEntityGraph("Book.Author.Genre"));
-
-        return query.getResultList();
-    }
-
-    @Override
-    public List<Book> findAllByGenreId(Long id) {
-        TypedQuery<Book> query = em.createQuery("select b from Book b where b.genre.id = :id", Book.class);
-        query.setParameter("id", id);
-        query.setHint("javax.persistence.fetchgraph", this.em.getEntityGraph("Book.Author.Genre"));
-
-        return query.getResultList();
-    }
-
-    @Override
     public Book findById(Long id) {
         Map<String, Object> properties = Map.of("javax.persistence.fetchgraph", em.getEntityGraph("Book.Author.Genre"));
         return em.find(Book.class, id, properties);

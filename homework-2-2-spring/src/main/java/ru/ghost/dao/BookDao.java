@@ -10,10 +10,6 @@ public interface BookDao {
 
     List<Book> findAll();
 
-    List<Book> findAllByAuthorId(Long id);
-
-    List<Book> findAllByGenreId(Long id);
-
     Book findById(Long id);
 
     Book save(Book book);
