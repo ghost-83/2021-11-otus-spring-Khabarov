@@ -8,3 +8,5 @@
 + Домашнее задание №4 - homework-1-4-spring
 + Домашнее задание №5 - homework-2-1-spring
 + Домашнее задание №6 - homework-2-2-spring
++ Домашнее задание №7 - homework-2-3-spring
++ Домашнее задание №8 - homework-2-4-spring
