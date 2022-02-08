@@ -8,6 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import ru.ghost.model.Author;
 import ru.ghost.model.Book;
+import ru.ghost.model.Comment;
 import ru.ghost.model.Genre;
 import ru.ghost.repository.BookRepository;
 
@@ -27,6 +28,7 @@ class BookServiceImplTest {
     private final Author AUTHOR = new Author("1L", "testFirstName", "testLastName");
     private final Genre GENRE = new Genre("1L", "testGenre");
     private final Book EXPECTED_BOOK = new Book("1L", "testBook", AUTHOR, GENRE);
+    private final Comment COMMENT = new Comment("1L", "testComment", EXPECTED_BOOK.getId());
 
     @MockBean
     private BookRepository bookRepository;
@@ -36,6 +38,9 @@ class BookServiceImplTest {
 
     @MockBean
     private GenreService genreService;
+
+    @MockBean
+    private CommentService commentService;
 
     @Autowired
     private BookServiceImpl service;
@@ -63,11 +68,28 @@ class BookServiceImplTest {
     @Test
     @DisplayName("return the expected book by its id")
     void shouldReturnExpectedBookById() {
-
         given(bookRepository.findById(EXPECTED_BOOK.getId())).willReturn(Optional.of(EXPECTED_BOOK));
         Book actualBook = service.findById(EXPECTED_BOOK.getId());
 
         assertThat(actualBook).usingRecursiveComparison().isEqualTo(EXPECTED_BOOK);
+    }
+
+    @Test
+    @DisplayName("return the expected list by its author")
+    void shouldReturnExpectedBooksListByAuthor() {
+        given(bookRepository.findAllByAuthor(AUTHOR)).willReturn(List.of(EXPECTED_BOOK));
+
+        List<Book> actualList = service.findAllByAuthor(AUTHOR);
+        Assertions.assertThat(actualList).usingRecursiveFieldByFieldElementComparator().containsExactly(EXPECTED_BOOK);
+    }
+
+    @Test
+    @DisplayName("return the expected list by its genre")
+    void shouldReturnExpectedBooksListByGenre() {
+        given(bookRepository.findAllByGenre(GENRE)).willReturn(List.of(EXPECTED_BOOK));
+
+        List<Book> actualList = service.findAllByGenre(GENRE);
+        Assertions.assertThat(actualList).usingRecursiveFieldByFieldElementComparator().containsExactly(EXPECTED_BOOK);
     }
 
     @Test
@@ -94,13 +116,22 @@ class BookServiceImplTest {
     }
 
     @Test
+    @DisplayName("edit a books")
+    void shouldUpdateBooks() {
+        service.updateAll(List.of(EXPECTED_BOOK));
+        verify(bookRepository, times(1)).saveAll(List.of(EXPECTED_BOOK));
+    }
+
+    @Test
     @DisplayName("delete a given book by its id")
     void shouldCorrectlyDeleteBook() {
 
         given(bookRepository.findById(EXPECTED_BOOK.getId())).willReturn(Optional.of(EXPECTED_BOOK));
+        given(commentService.findAllByBookId(EXPECTED_BOOK.getId())).willReturn(List.of(COMMENT));
 
         service.delete("1L");
 
-        verify(bookRepository, times(1)).delete(EXPECTED_BOOK);
+        verify(bookRepository, times(1)).deleteById(EXPECTED_BOOK.getId());
+        verify(commentService, times(1)).deleteAll(List.of(COMMENT.getId()));
     }
 }

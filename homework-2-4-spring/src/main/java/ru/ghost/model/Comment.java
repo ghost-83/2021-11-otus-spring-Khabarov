@@ -16,10 +16,10 @@ import static java.time.LocalDateTime.now;
 @AllArgsConstructor
 public class Comment {
 
-    public Comment(String id, String text, Book book) {
+    public Comment(String id, String text, String bookID) {
         this.id = id;
         this.text = text;
-        this.book = book;
+        this.bookId = bookID;
     }
 
     @Id
@@ -29,5 +29,5 @@ public class Comment {
 
     private LocalDateTime time = now();
 
-    private Book book;
+    private String bookId;
 }

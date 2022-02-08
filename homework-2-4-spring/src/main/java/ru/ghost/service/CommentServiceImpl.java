@@ -32,6 +32,12 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     @Transactional(readOnly = true)
+    public List<Comment> findAllByBookId(String idBook) {
+        return commentRepository.findAllByBookId(idBook);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public Comment findById(String id) {
         return commentRepository.findById(id).orElseThrow(() -> new LibraryException("comment not found."));
     }
@@ -40,7 +46,7 @@ public class CommentServiceImpl implements CommentService {
     @Transactional(readOnly = true)
     public Comment create(String text, String idBook) {
         Book book = bookService.findById(idBook);
-        Comment comment = new Comment(null, text, book);
+        Comment comment = new Comment(null, text, book.getId());
         return commentRepository.save(comment);
     }
 
@@ -49,16 +55,14 @@ public class CommentServiceImpl implements CommentService {
     public Comment update(String id, String text, String idBook) {
         Book book = bookService.findById(idBook);
         Comment comment = findById(id);
-        comment.setBook(book);
+        comment.setBookId(book.getId());
         comment.setText(text);
         return commentRepository.save(comment);
     }
 
     @Override
     @Transactional
-    public void delete(String id) {
-
-        Comment comment = findById(id);
-        commentRepository.delete(comment);
+    public void deleteAll(List<String> ids) {
+        commentRepository.deleteAllById(ids);
     }
 }

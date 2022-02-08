@@ -35,8 +35,8 @@ public class InitMongoDBDataChangeLog {
 
     @ChangeSet(order = "002", id = "initComments", author = "pk", runAlways = true)
     public void initComments(CommentRepository repository) {
-        repository.save(new Comment(null, "Comment1", book1));
-        repository.save(new Comment(null, "Comment2", book2));
-        repository.save(new Comment(null, "Comment3", book1));
+        repository.save(new Comment(null, "Comment1", book1.getId()));
+        repository.save(new Comment(null, "Comment2", book2.getId()));
+        repository.save(new Comment(null, "Comment3", book1.getId()));
     }
 }

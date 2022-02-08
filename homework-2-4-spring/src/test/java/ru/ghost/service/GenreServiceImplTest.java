@@ -27,6 +27,9 @@ class GenreServiceImplTest {
     @MockBean
     private GenreRepository genreRepository;
 
+    @MockBean
+    private BookService bookService;
+
     @Autowired
     private GenreServiceImpl service;
 
@@ -75,6 +78,7 @@ class GenreServiceImplTest {
     @DisplayName("edit genre")
     void shouldUpdateGenre() {
         given(genreRepository.save(any(Genre.class))).willReturn(EXPECTED_GENRE);
+        given(genreRepository.findById(EXPECTED_GENRE.getId())).willReturn(Optional.of(EXPECTED_GENRE));
         Genre genre = service.update(EXPECTED_GENRE.getId(), EXPECTED_GENRE.getName());
 
         assertThat(genre).isEqualTo(EXPECTED_GENRE);
@@ -88,6 +92,6 @@ class GenreServiceImplTest {
 
         service.delete("1L");
 
-        verify(genreRepository, times(1)).delete(EXPECTED_GENRE);
+        verify(genreRepository, times(1)).deleteById(EXPECTED_GENRE.getId());
     }
 }

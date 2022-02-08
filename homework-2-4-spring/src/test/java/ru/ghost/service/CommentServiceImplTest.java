@@ -28,13 +28,13 @@ class CommentServiceImplTest {
     private final Author AUTHOR = new Author("1L", "Ivan", "Pupcin");
     private final Genre GENRE = new Genre("1L", "Educational");
     private final Book BOOK = new Book("1L", "Learning java", AUTHOR, GENRE);
-    private final Comment EXPECTED_COMMENT = new Comment("1L", "Good!", BOOK);
+    private final Comment EXPECTED_COMMENT = new Comment("1L", "Good!", BOOK.getId());
 
     @MockBean
     private CommentRepository commentRepository;
 
     @MockBean
-    private BookServiceImpl bookService;
+    private BookService bookService;
 
     @Autowired
     private CommentServiceImpl commentService;
@@ -90,13 +90,10 @@ class CommentServiceImplTest {
     }
 
     @Test
-    @DisplayName("delete a given comment by its id")
-    void shouldCorrectlyDeleteComment() {
+    @DisplayName("delete a given comments by its id")
+    void shouldCorrectlyDeleteComments() {
+        commentService.deleteAll(List.of(EXPECTED_COMMENT.getId()));
 
-        given(commentRepository.findById(EXPECTED_COMMENT.getId())).willReturn(Optional.of(EXPECTED_COMMENT));
-
-        commentService.delete("1L");
-
-        verify(commentRepository, times(1)).delete(EXPECTED_COMMENT);
+        verify(commentRepository, times(1)).deleteAllById(List.of(EXPECTED_COMMENT.getId()));
     }
 }

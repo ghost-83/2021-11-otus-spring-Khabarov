@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.ghost.exception.LibraryException;
+import ru.ghost.model.Book;
 import ru.ghost.model.Genre;
 import ru.ghost.repository.GenreRepository;
 
@@ -17,6 +18,8 @@ import static org.apache.logging.log4j.util.Strings.isEmpty;
 public class GenreServiceImpl implements GenreService {
 
     private final GenreRepository genreRepository;
+
+    private final BookService bookService;
 
     @Override
     @Transactional(readOnly = true)
@@ -47,18 +50,25 @@ public class GenreServiceImpl implements GenreService {
     @Override
     @Transactional
     public Genre update(String id, String name) {
-        Genre genre = new Genre(id, name);
         ofNullable(id).orElseThrow(() -> new LibraryException("id is null."));
+        Genre genre = this.findById(id);
+
+        List<Book> books = bookService.findAllByGenre(genre);
+
+        genre.setName(name);
         validate(genre);
+
+        if (books.size() > 0) {
+            books.forEach(book -> book.setGenre(genre));
+            bookService.updateAll(books);
+        }
         return genreRepository.save(genre);
     }
 
     @Override
     @Transactional
     public void delete(String id) {
-
-        Genre genre = findById(id);
-        genreRepository.delete(genre);
+        genreRepository.deleteById(id);
     }
 
     private void validate(Genre genre) {

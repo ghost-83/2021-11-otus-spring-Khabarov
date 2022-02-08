@@ -42,10 +42,4 @@ public class CommentShell {
         Comment comment = service.update(id, text, bookId);
         return Objects.equals(comment.getId(), id) ? "Record changed successfully" : "Failed to change record";
     }
-
-    @ShellMethod(value = "Delete Comment by id", key = {"cdel", "comment-delete"})
-    public String delete(@ShellOption String id) {
-        service.delete(id);
-        return "The record was successfully deleted";
-    }
 }

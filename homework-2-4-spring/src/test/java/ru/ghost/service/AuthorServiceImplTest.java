@@ -25,6 +25,9 @@ class AuthorServiceImplTest {
     @MockBean
     private AuthorRepository authorRepository;
 
+    @MockBean
+    private BookService bookService;
+
     @Autowired
     private AuthorServiceImpl service;
 
@@ -88,6 +91,6 @@ class AuthorServiceImplTest {
 
         service.delete("1L");
 
-        verify(authorRepository, times(1)).delete(EXPECTED_AUTHOR);
+        verify(authorRepository, times(1)).deleteById(EXPECTED_AUTHOR.getId());
     }
 }

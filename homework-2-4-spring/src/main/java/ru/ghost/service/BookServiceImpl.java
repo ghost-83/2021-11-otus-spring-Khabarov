@@ -6,10 +6,12 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.ghost.exception.LibraryException;
 import ru.ghost.model.Author;
 import ru.ghost.model.Book;
+import ru.ghost.model.Comment;
 import ru.ghost.model.Genre;
 import ru.ghost.repository.BookRepository;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.apache.logging.log4j.util.Strings.isEmpty;
 
@@ -20,6 +22,7 @@ public class BookServiceImpl implements BookService {
     private final BookRepository bookRepository;
     private final AuthorService authorService;
     private final GenreService genreService;
+    private final CommentService commentService;
 
     @Override
     @Transactional(readOnly = true)
@@ -37,6 +40,18 @@ public class BookServiceImpl implements BookService {
     @Transactional(readOnly = true)
     public Book findById(String id) {
         return bookRepository.findById(id).orElseThrow(() -> new LibraryException("book not found."));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Book> findAllByAuthor(Author author) {
+        return bookRepository.findAllByAuthor(author);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Book> findAllByGenre(Genre genre) {
+        return bookRepository.findAllByGenre(genre);
     }
 
     @Override
@@ -67,9 +82,21 @@ public class BookServiceImpl implements BookService {
 
     @Override
     @Transactional
+    public void updateAll(List<Book> books) {
+        bookRepository.saveAll(books);
+    }
+
+    @Override
+    @Transactional
     public void delete(String id) {
-        Book book = findById(id);
-        bookRepository.delete(book);
+        List<Comment> comments = commentService.findAllByBookId(id);
+        if (comments.size() > 0) {
+            commentService.deleteAll(comments
+                    .stream()
+                    .map(Comment::getId)
+                    .collect(Collectors.toList()));
+        }
+        bookRepository.deleteById(id);
     }
 
     private void validate(Book book) {

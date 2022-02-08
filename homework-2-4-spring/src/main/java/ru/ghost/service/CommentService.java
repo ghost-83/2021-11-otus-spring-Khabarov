@@ -10,11 +10,13 @@ public interface CommentService {
 
     List<Comment> findAll();
 
+    List<Comment> findAllByBookId(String idBook);
+
     Comment findById(String id);
 
     Comment create(String text, String idBook);
 
     Comment update(String id, String text, String idBook);
 
-    void delete(String id);
+    void deleteAll(List<String> ids);
 }
