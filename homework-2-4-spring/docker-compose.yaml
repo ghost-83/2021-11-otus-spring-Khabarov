@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+
+  ###############################################################################################################
+  #   MONGO
+  ###############################################################################################################
+
+  mongodb:
+    container_name: mongodb
+    image: mongo:4.2.3
+    environment:
+      MONGO_INITDB_DATABASE: test
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: test
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./db/mongo/datafiles/db:/data
+      - ./db/mongo/configfiles:/etc/mongod
