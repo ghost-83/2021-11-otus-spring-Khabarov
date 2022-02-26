@@ -11,6 +11,7 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Mono;
 import ru.ghost.model.Book;
 import ru.ghost.repository.BookRepository;
+import ru.ghost.repository.CommentRepository;
 
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
@@ -26,6 +27,9 @@ public class BookControllerTest {
 
     @MockBean
     private BookRepository repository;
+
+    @MockBean
+    private CommentRepository commentRepository;
 
     @Test
     @DisplayName("return a book by id")
@@ -62,6 +66,7 @@ public class BookControllerTest {
     @Test
     public void deleteTest() {
         given(repository.deleteById(anyString())).willReturn(Mono.empty());
+        given(commentRepository.deleteByBookId(anyString())).willReturn(Mono.empty());
 
         webTestClient.delete()
                 .uri("/api/v1/book/" + ID)

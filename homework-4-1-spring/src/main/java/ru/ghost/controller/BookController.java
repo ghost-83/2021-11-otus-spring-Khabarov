@@ -6,6 +6,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import ru.ghost.model.Book;
 import ru.ghost.repository.BookRepository;
+import ru.ghost.repository.CommentRepository;
 
 @RestController
 @RequiredArgsConstructor
@@ -13,6 +14,7 @@ import ru.ghost.repository.BookRepository;
 public class BookController {
 
     private final BookRepository repository;
+    private final CommentRepository commentRepository;
 
     @GetMapping({"/book"})
     public Flux<Book> findAll() {
@@ -31,6 +33,7 @@ public class BookController {
 
     @DeleteMapping("/book/{id}")
     public Mono<Void> delete(@PathVariable("id") String id) {
-        return repository.deleteById(id).flatMap(result -> Mono.empty());
+        return Mono.zip(commentRepository.deleteByBookId(id), repository.deleteById(id))
+                .flatMap(result -> Mono.empty());
     }
 }
