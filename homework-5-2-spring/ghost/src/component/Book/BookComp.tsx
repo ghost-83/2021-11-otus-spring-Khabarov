@@ -1,11 +1,11 @@
 import {Dispatch, FC, SetStateAction, SyntheticEvent} from "react"
 import {Accordion, AccordionDetails, AccordionSummary, Grid, IconButton, Typography} from "@mui/material"
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore"
-import {ContentPasteGo} from "@mui/icons-material"
-import {modalSlice, ModalType} from "../../hook/slice/modal.slice"
+import {Delete} from "@mui/icons-material"
 import {useDispatch} from "react-redux"
 import {useAppSelector} from "../../hook/redux";
 import {IBook} from "../../model/IBook";
+import {deleteBook} from "../../hook/creator/book.creator";
 
 interface Props {
     keyData: number
@@ -25,9 +25,8 @@ export const ReferenceBookComp: FC<Props> = ({keyData, value, setBookModal, setE
             setExpanded(isExpanded ? panel : false);
         }
 
-    const handleOpenUpdate = () => () => {
-        dispatch(modalSlice.actions.openModalWindow(ModalType.UPDATE))
-        setBookModal(value)
+    const handleDelete = () => () => {
+        dispatch(deleteBook(value.id))
     }
 
     return (
@@ -49,14 +48,15 @@ export const ReferenceBookComp: FC<Props> = ({keyData, value, setBookModal, setE
             </AccordionSummary>
             <AccordionDetails>
                 <Typography variant="subtitle1" color="text.secondary" dangerouslySetInnerHTML={{__html: value.text}}/>
-                {userAuth && userAuth.authorities.find(e => e.authority === "ADMIN") &&
+                {/*{userAuth && userAuth.authorities.find(e => e.authority === "ROLE_ADMIN") && Кнопка удаления оставлена активной для user стобы можно было проверить работу Spring Security */}
+                {userAuth &&
                     <Grid container
                           direction="row"
                           justifyContent="flex-end"
                           alignItems="center">
                         <Grid item>
-                            <IconButton edge="start" color="info" onClick={handleOpenUpdate()} aria-label="update">
-                                <ContentPasteGo/>
+                            <IconButton edge="start" color="error" onClick={handleDelete()} aria-label="update">
+                                <Delete/>
                             </IconButton>
                         </Grid>
                     </Grid>}

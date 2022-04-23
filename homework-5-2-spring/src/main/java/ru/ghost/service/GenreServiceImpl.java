@@ -45,7 +45,7 @@ public class GenreServiceImpl implements GenreService {
 
     @Override
     @Transactional
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public void delete(Long id) {
 
         Genre genre = findById(id);

@@ -46,7 +46,7 @@ public class AuthorServiceImpl implements AuthorService {
 
     @Override
     @Transactional
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public void delete(Long id) {
         Author author = findById(id);
         authorRepository.delete(author);

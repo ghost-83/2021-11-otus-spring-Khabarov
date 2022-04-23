@@ -2,7 +2,7 @@ import {FC, useEffect, useState} from "react"
 import {Box} from "@mui/material"
 import {useAppSelector} from "../hook/redux"
 import {useDispatch} from "react-redux"
-import {fetchPosts} from "../hook/creator/book.creator"
+import {fetchBooks} from "../hook/creator/book.creator"
 import {IBook} from "../model/IBook";
 import {HeaderCategory} from "../component/Category/HeaderCategory";
 import {ReferenceBookComp} from "../component/Book/BookComp";
@@ -16,7 +16,7 @@ export const Book: FC = () => {
     const dispatch = useDispatch()
 
     useEffect(() => {
-        dispatch(fetchPosts())
+        dispatch(fetchBooks())
     }, [dispatch])
 
     return (

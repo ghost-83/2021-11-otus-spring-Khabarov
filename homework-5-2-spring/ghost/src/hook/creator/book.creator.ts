@@ -1,16 +1,16 @@
 import {AppDispatch} from "../store";
 import {isLoadingSlice} from "../slice/load.slice";
 import {AxiosError} from "axios";
-import {postApi} from "../../api/book.api";
+import {bookApi} from "../../api/book.api";
 import {categoryApi} from "../../api/category.api";
 import {categorySlice} from "../slice/category.slice";
 import {bookSlice} from "../slice/book.slice";
 import {messageError} from "./message.creator";
 
-export const fetchPosts = () => async (dispatch: AppDispatch) => {
+export const fetchBooks = () => async (dispatch: AppDispatch) => {
     try {
         dispatch(isLoadingSlice.actions.isLoadingStart())
-        const responsePost = await postApi.findAll()
+        const responsePost = await bookApi.findAll()
         dispatch(bookSlice.actions.postsFetchingSuccess(responsePost))
         const response = await categoryApi.findAll()
         dispatch(categorySlice.actions.genresFetchingSuccess(response))
@@ -21,10 +21,10 @@ export const fetchPosts = () => async (dispatch: AppDispatch) => {
     }
 }
 
-export const fetchPostCategory = (category: string) => async (dispatch: AppDispatch) => {
+export const fetchBookCategory = (category: string) => async (dispatch: AppDispatch) => {
     try {
         dispatch(isLoadingSlice.actions.isLoadingStart())
-        const response = await postApi.findAllByCategory(category)
+        const response = await bookApi.findAllByCategory(category)
         dispatch(bookSlice.actions.postsFetchingSuccess(response))
         dispatch(isLoadingSlice.actions.isLoadingEnd())
     } catch (error) {
@@ -33,12 +33,22 @@ export const fetchPostCategory = (category: string) => async (dispatch: AppDispa
     }
 }
 
-export const searchPost = (search: string) => async (dispatch: AppDispatch) => {
+export const searchBook = (search: string) => async (dispatch: AppDispatch) => {
     try {
         dispatch(isLoadingSlice.actions.isLoadingStart())
-        const response = await postApi.search(search)
+        const response = await bookApi.search(search)
         dispatch(bookSlice.actions.postsFetchingSuccess(response))
         dispatch(isLoadingSlice.actions.isLoadingEnd())
+    } catch (error) {
+        dispatch(messageError({code: (error as AxiosError).request.status, message: (error as AxiosError).message}))
+        dispatch(isLoadingSlice.actions.isLoadingEnd())
+    }
+}
+
+export const deleteBook = (id: number) => async (dispatch: AppDispatch) => {
+    try {
+        await bookApi.delete(id)
+        dispatch(fetchBooks())
     } catch (error) {
         dispatch(messageError({code: (error as AxiosError).request.status, message: (error as AxiosError).message}))
         dispatch(isLoadingSlice.actions.isLoadingEnd())

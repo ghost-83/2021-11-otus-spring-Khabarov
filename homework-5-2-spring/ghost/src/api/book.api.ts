@@ -20,20 +20,20 @@ class BookApi {
     }
 
     async search(search: string): Promise<Array<IBook>> {
-        return (await this.instants.get(`/search/${search}`)).data
+        return (await this.instants.get(`/book/search/${search}`)).data
     }
 
     async findById(id: number): Promise<IBook> {
-        return (await this.instants.get(`/${id}`)).data
+        return (await this.instants.get(`/book/${id}`)).data
     }
 
     async save(data: IBook) {
-        await this.instants.post("/", {...data})
+        await this.instants.post("/book/", {...data})
     }
 
     async delete(id: number) {
-        await this.instants.delete(`/${id}`)
+        await this.instants.delete(`/book/${id}`)
     }
 }
 
-export const postApi = new BookApi()
+export const bookApi = new BookApi()

@@ -60,7 +60,7 @@ public class BookServiceImpl implements BookService {
 
     @Override
     @Transactional
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public void delete(Long id) {
         Book book = findById(id);
         bookRepository.delete(book);

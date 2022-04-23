@@ -1,10 +1,10 @@
 import {ChangeEvent, FC, useState} from "react";
 import {Divider, Grid, IconButton, MenuItem, Select, SelectChangeEvent, TextField} from "@mui/material";
-import {AddCircle, Search} from "@mui/icons-material";
+import {Search} from "@mui/icons-material";
 import {useDispatch} from "react-redux";
 import {useAppSelector} from "../../hook/redux";
 import {modalSlice, ModalType} from "../../hook/slice/modal.slice";
-import {fetchPostCategory, fetchPosts, searchPost} from "../../hook/creator/book.creator";
+import {fetchBookCategory, fetchBooks, searchBook} from "../../hook/creator/book.creator";
 
 interface Props {
     categories: string[] | null
@@ -15,35 +15,34 @@ export const HeaderCategory: FC<Props> = ({categories, typeData}) => {
 
     const [data, setData] = useState('all');
     const [search, setSearch] = useState('');
-    const {userAuth} = useAppSelector(state => state.authReducer)
     const dispatch = useDispatch()
 
     const handleChangeSelect = (event: SelectChangeEvent) => {
         if (event.target.value !== 'all') {
             switch (typeData) {
                 case "post":
-                    dispatch(fetchPostCategory(event.target.value))
+                    dispatch(fetchBookCategory(event.target.value))
                     break
                 default:
-                    // dispatch(fetchIFilesCategory(event.target.value))
+                // dispatch(fetchIFilesCategory(event.target.value))
             }
         } else
             allData()
         setData(event.target.value)
     }
-
-    const handleOpenCreate = () => {
-        dispatch(modalSlice.actions.openModalWindow(ModalType.CREATE))
-    }
+    //
+    // const handleOpenCreate = () => {
+    //     dispatch(modalSlice.actions.openModalWindow(ModalType.CREATE))
+    // }
 
     const allData = () => {
 
         switch (typeData) {
             case "post":
-                dispatch(fetchPosts())
+                dispatch(fetchBooks())
                 break
             default:
-                // dispatch(fetchIFiles())
+            // dispatch(fetchIFiles())
         }
     }
 
@@ -51,10 +50,10 @@ export const HeaderCategory: FC<Props> = ({categories, typeData}) => {
         if (search.length > 0)
             switch (typeData) {
                 case "post":
-                    dispatch(searchPost(search))
+                    dispatch(searchBook(search))
                     break
                 default:
-                    // dispatch(searchFile(search))
+                // dispatch(searchFile(search))
             }
         else
             allData()
@@ -100,16 +99,6 @@ export const HeaderCategory: FC<Props> = ({categories, typeData}) => {
                     <IconButton onClick={handleSearch}>
                         <Search color="primary"/>
                     </IconButton>
-                </Grid>
-                <Grid item sx={{width: '3rem', ml: 10}}>
-                    {userAuth && userAuth.authorities.find(e => e.authority === "ADMIN") && (typeData === "book" || typeData === "file" || typeData === "music") &&
-                        <IconButton
-                            onClick={handleOpenCreate}
-                            edge="start"
-                            color="info"
-                            aria-label="create">
-                            <AddCircle/>
-                        </IconButton>}
                 </Grid>
             </Grid>
             <Divider sx={{mt: 1, mb: 2}}/>
