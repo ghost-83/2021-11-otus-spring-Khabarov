@@ -16,3 +16,4 @@
 + Домашнее задание №12 - homework-5-1-spring
 + Домашнее задание №13 - homework-5-2-spring
 + Домашнее задание №14 - homework-6-1-spring
++ Домашнее задание №15 - homework-6-2-spring
