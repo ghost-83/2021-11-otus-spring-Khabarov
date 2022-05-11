@@ -1,0 +1,149 @@
+version: '3.8'
+
+services:
+
+  ###############################################################################################################
+  #   BLOG
+  ###############################################################################################################
+
+  blog:
+    build: ./
+    container_name: blog
+    restart: always #Перезапуск всегда
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./static/files:/tmp/webFiles
+    links:
+      - graylog
+      - grafana
+    depends_on:
+      - graylog
+      - grafana
+    networks:
+      - monitoring
+
+  ###############################################################################################################
+  #   NGINX
+  ###############################################################################################################
+
+  nginx:
+    image: nginx:alpine
+    container_name: nginx
+    restart: always #Перезапуск всегда
+    volumes:
+      - ./templates:/etc/nginx/templates
+      - ./static:/usr/share/nginx/html
+    environment:
+      - NGINX_HOST=localhost
+      - NGINX_PORT=80
+    ports:
+      - "8989:80"
+    links:
+      - blog
+    depends_on:
+      - blog
+    networks:
+      - monitoring
+
+
+  ###############################################################################################################
+  #   GRAYLOG
+  ###############################################################################################################
+
+  graylog:
+    image: graylog/graylog:4.2
+    container_name: graylog
+    restart: always #Перезапуск всегда
+    ports:
+      - "9000:9000"
+      - "12200:12200"
+      - "12200:12200/udp"
+      - "12201:12201"
+      - "12201:12201/udp"
+      - "12202:12202"
+      - "12202:12202/udp"
+      - "1514:1514"
+      - "1514:1514/udp"
+    environment:
+      GRAYLOG_PASSWORD_SECRET: Mfi7dF5s4mfj0U7e
+      GRAYLOG_ROOT_PASSWORD_SHA2: 0656601ff7d01f66082d25a9db5c4b5db4e924646a9b8c6a4be589809047df7c
+      GRAYLOG_HTTP_EXTERNAL_URI: http://127.0.0.1:9000/
+      GRAYLOG_TIMEZONE: Asia/Novokuznetsk
+    links:
+      - mongo
+      - elasticsearch
+    depends_on:
+      - mongo
+      - elasticsearch
+
+  ###############################################################################################################
+  #   MONGO
+  ###############################################################################################################
+
+  mongo:
+    image: mongo:4.2
+    container_name: mongo
+    restart: always #Перезапуск всегда
+    volumes:
+      - ./db/mongo:/data/db
+
+  ###############################################################################################################
+  #   ELASTICSEARCH
+  ###############################################################################################################
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch-oss:7.10.2
+    container_name: elasticsearch
+    restart: always #Перезапуск всегда
+    environment:
+      ES_JAVA_OPTS: -Xms512m -Xmx512m
+      http.host: 0.0.0.0
+      network.host: 0.0.0.0
+      transport.host: localhost
+      discovery.type: single-node
+
+  ###############################################################################################################
+  #   GRAFANA
+  ###############################################################################################################
+
+  grafana:
+    container_name: grafana
+    build: './config/grafana'
+    user: root
+    restart: always #Перезапуск всегда
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./grafana:/var/lib/grafana
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    depends_on:
+      - prometheus
+    networks:
+      monitoring:
+        aliases:
+          - grafana
+
+  ###############################################################################################################
+  #   PROMETHEUS
+  ###############################################################################################################
+
+  prometheus:
+    image: prom/prometheus:v2.31.1
+    container_name: prometheus
+    user: root
+    restart: always #Перезапуск всегда
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./config/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./prometheus:/prometheus
+    networks:
+      monitoring:
+        aliases:
+          - prometheus
+
+networks:
+  monitoring:
