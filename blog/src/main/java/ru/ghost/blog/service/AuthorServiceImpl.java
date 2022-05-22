@@ -1,5 +1,6 @@
 package ru.ghost.blog.service;
 
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,7 @@ import static org.apache.logging.log4j.util.Strings.isEmpty;
 public class AuthorServiceImpl implements AuthorService {
 
     private final AuthorRepository authorRepository;
+    private final CachedDataService cachedDataService;
 
     @Override
     @Transactional(readOnly = true)
@@ -26,6 +28,7 @@ public class AuthorServiceImpl implements AuthorService {
 
     @Override
     @Transactional(readOnly = true)
+    @HystrixCommand(groupKey = "AuthorService", commandKey = "findAllAuthor", fallbackMethod = "getAuthors")
     public List<Author> findAll() {
         return authorRepository.findAll();
     }
@@ -49,6 +52,10 @@ public class AuthorServiceImpl implements AuthorService {
     public void delete(Long id) {
         Author author = findById(id);
         authorRepository.delete(author);
+    }
+
+    private List<Author> getAuthors() {
+        return List.of(cachedDataService.getAuthor());
     }
 
     private void validate(Author author) {

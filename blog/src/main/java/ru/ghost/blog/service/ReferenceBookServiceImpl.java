@@ -1,5 +1,6 @@
 package ru.ghost.blog.service;
 
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -24,6 +25,7 @@ public class ReferenceBookServiceImpl implements ReferenceBookService {
     private final ReferenceBookRepository repository;
     private final AuthorService authorService;
     private final GenreService genreService;
+    private final CachedDataService cachedDataService;
 
     @Override
     @Transactional(readOnly = true)
@@ -33,6 +35,7 @@ public class ReferenceBookServiceImpl implements ReferenceBookService {
 
     @Override
     @Transactional(readOnly = true)
+    @HystrixCommand(groupKey = "ReferenceBookService", commandKey = "findAllReferenceBook", fallbackMethod = "getReferenceBooks")
     public List<ReferenceBook> findAll() {
         return repository.findAll();
     }
@@ -79,6 +82,10 @@ public class ReferenceBookServiceImpl implements ReferenceBookService {
     public void delete(Long id) {
         ReferenceBook referenceBook = findById(id);
         repository.delete(referenceBook);
+    }
+
+    private List<ReferenceBook> getReferenceBooks() {
+        return List.of(cachedDataService.getReferenceBook());
     }
 
     private void validate(ReferenceBook referenceBook) {

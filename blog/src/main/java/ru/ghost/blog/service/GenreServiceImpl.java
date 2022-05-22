@@ -1,5 +1,6 @@
 package ru.ghost.blog.service;
 
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,7 @@ import static org.apache.logging.log4j.util.Strings.isEmpty;
 public class GenreServiceImpl implements GenreService {
 
     private final GenreRepository genreRepository;
+    private final CachedDataService cachedDataService;
 
     @Override
     @Transactional(readOnly = true)
@@ -26,6 +28,7 @@ public class GenreServiceImpl implements GenreService {
 
     @Override
     @Transactional(readOnly = true)
+    @HystrixCommand(groupKey = "GenreService", commandKey = "findAllGenre", fallbackMethod = "getGenres")
     public List<Genre> findAll() {
         return genreRepository.findAll();
     }
@@ -55,6 +58,10 @@ public class GenreServiceImpl implements GenreService {
 
         Genre genre = findById(id);
         genreRepository.delete(genre);
+    }
+
+    private List<Genre> getGenres() {
+        return List.of(cachedDataService.getGenre());
     }
 
     private void validate(Genre genre) {
