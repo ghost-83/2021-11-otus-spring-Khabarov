@@ -10,6 +10,7 @@ import static javax.persistence.GenerationType.IDENTITY;
 @Setter
 @Entity
 @ToString
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "genre")
